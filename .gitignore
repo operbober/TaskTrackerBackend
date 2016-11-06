@@ -1,0 +1,7 @@
+
+/target/
+/.idea/
+/.mvn/
+/TaskTrackerBackend.iml
+/mvnw.cmd
+/mvnw
