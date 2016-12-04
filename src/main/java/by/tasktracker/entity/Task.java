@@ -1,7 +1,6 @@
 package by.tasktracker.entity;
 
 import by.tasktracker.entity.superclass.NamedEntity;
-import org.springframework.beans.factory.annotation.Required;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,7 +8,10 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Task extends NamedEntity {
     private String description;
-    private boolean status = false;
+    private Boolean status = false;
+
+    @ManyToOne(targetEntity = TaskStatus.class)
+    private TaskStatus taskStatus;
 
     @ManyToOne(targetEntity = User.class)
     @NotNull
@@ -47,12 +49,20 @@ public class Task extends NamedEntity {
         this.description = description;
     }
 
-    public boolean isStatus() {
+    public Boolean isStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public TaskStatus getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
     }
 
     public User getCreator() {

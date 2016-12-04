@@ -3,6 +3,7 @@ package by.tasktracker.controller;
 import by.tasktracker.entity.Task;
 import by.tasktracker.entity.User;
 import by.tasktracker.service.TaskService;
+import by.tasktracker.service.TaskStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,13 +15,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static by.tasktracker.utils.PermissionChecker.checkDeveloperPermissions;
+
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
-    private final String NOT_ALLOWED = "You not have permission for this action!";
 
     @Autowired
     TaskService service;
+
+    @Autowired
+    TaskStatusService taskStatusService;
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Task> get(){
@@ -44,7 +49,7 @@ public class TaskController {
     }
 
     @RequestMapping(value = "{by}/{id}/{page}/{size}", method = RequestMethod.GET)
-    public Page<Task> getByProject(@PathVariable("by") String by,
+    public Page<Task> get(@PathVariable("by") String by,
                                    @PathVariable("id") String id,
                                    @PathVariable("page") int page,
                                    @PathVariable("size") int size){
@@ -65,21 +70,28 @@ public class TaskController {
         return service.save(task);
     }
 
+    @Deprecated
     @RequestMapping(value = "/switchStatus/{taskId}" ,method = RequestMethod.PUT)
     public Task switchStatus(@AuthenticationPrincipal User activeUser,
                              @PathVariable("taskId") String  taskId,
-                             HttpServletResponse response) throws IOException {
+                             HttpServletResponse response) {
         Task oldTask = service.get(taskId);
-        if (oldTask.getDeveloper().getUsername().equals(activeUser.getUsername())) {
-            return service.switchStatus(taskId);
-        } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, NOT_ALLOWED);
-            return oldTask;
-        }
+        checkDeveloperPermissions(activeUser, oldTask.getDeveloper(), response);
+        return service.switchStatus(taskId);
+    }
+
+    @RequestMapping(value = "/setStatus/{taskId}" ,method = RequestMethod.PUT)
+    public Task setStatus(@AuthenticationPrincipal User activeUser,
+                          @PathVariable("taskId") String  taskId,
+                          @RequestBody String statusId,
+                          HttpServletResponse response) {
+        Task oldTask = service.get(taskId);
+        checkDeveloperPermissions(activeUser, oldTask.getDeveloper(), response);
+        return service.setStatus(taskId, statusId);
     }
 
     @RequestMapping(value = "/selectDeveloper/{taskId}" ,method = RequestMethod.PUT)
-    public Task switchStatus(@PathVariable("taskId") String  taskId,
+    public Task setDeveloper(@PathVariable("taskId") String  taskId,
                              @RequestBody(required = false) User developer)
     {
         return service.setDeveloper(taskId, developer);

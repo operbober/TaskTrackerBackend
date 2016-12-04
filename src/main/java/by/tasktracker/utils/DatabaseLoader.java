@@ -14,14 +14,21 @@ public class DatabaseLoader implements CommandLineRunner {
     private final ProjectService projectService;
     private final TaskService taskService;
     private final CommentService commentService;
+    private final TaskStatusService taskStatusService;
 
     @Autowired
-    public DatabaseLoader(UserService userService, RoleService roleService, ProjectService projectService, TaskService taskService, CommentService commentService) {
+    public DatabaseLoader(UserService userService,
+                          RoleService roleService,
+                          ProjectService projectService,
+                          TaskService taskService,
+                          CommentService commentService,
+                          TaskStatusService taskStatusService) {
         this.userService = userService;
         this.roleService = roleService;
         this.projectService = projectService;
         this.taskService = taskService;
         this.commentService = commentService;
+        this.taskStatusService = taskStatusService;
     }
 
 
@@ -29,6 +36,10 @@ public class DatabaseLoader implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         Role roleManager = roleService.save(new Role(Role.ROLE_MANAGER));
         Role roleDeveloper = roleService.save(new Role(Role.ROLE_DEVELOPER));
+
+        TaskStatus taskStatusOpen = taskStatusService.save(new TaskStatus(TaskStatus.OPEN));
+        TaskStatus taskStatusInProgress = taskStatusService.save(new TaskStatus(TaskStatus.IN_PROGRESS));
+        TaskStatus taskStatusClosed = taskStatusService.save(new TaskStatus(TaskStatus.CLOSED));
 
         User manager = userService.save(new User("boss", "1234", roleManager));
         User backEndDev =  userService.save(new User("backendDeveloper", "backendonelove", roleDeveloper));

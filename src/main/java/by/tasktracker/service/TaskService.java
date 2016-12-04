@@ -13,4 +13,5 @@ public interface TaskService extends NamedService<Task> {
     Page<Task> getByDeveloperId(String developerId, int page, int size);
     Task setDeveloper(String taskId, User user);
     Task switchStatus(String taskId);
+    Task setStatus(String taskId, String statusId);
 }
