@@ -8,7 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+
+import static by.tasktracker.utils.PermissionChecker.checkRoleManagerPermissions;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -41,10 +44,23 @@ public class ProjectController {
         return service.getByTaskUserId(activeUser.getId(), page, size);
     }
 
+    @RequestMapping(value = "/byTag/{tag}", method = RequestMethod.GET)
+    public List<Project> getByTag(@PathVariable("tag") String tag){
+        return service.getByTag(tag);
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public Project add(@AuthenticationPrincipal User activeUser,
                        @RequestBody Project project){
         project.setCreator(activeUser);
         return service.save(project);
-    };
+    }
+
+    @RequestMapping(value = "/tags", method = RequestMethod.POST)
+    public Project tags(@AuthenticationPrincipal User activeUser,
+                        @RequestBody Project project,
+                        HttpServletResponse response) {
+        checkRoleManagerPermissions(activeUser, response);
+        return service.editTags(project.getId(), project.getTags());
+    }
 }

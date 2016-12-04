@@ -3,13 +3,11 @@ package by.tasktracker.entity;
 import by.tasktracker.entity.superclass.NamedEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Project extends NamedEntity {
@@ -18,6 +16,9 @@ public class Project extends NamedEntity {
     @ManyToOne(targetEntity = User.class)
     @NotNull
     private User creator;
+
+    @ManyToMany(targetEntity = ProjectTag.class)
+    private Set<ProjectTag> tags;
 
     @JsonIgnore
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
@@ -49,5 +50,13 @@ public class Project extends NamedEntity {
 
     public List<Task> getTasks() {
         return tasks;
+    }
+
+    public Set<ProjectTag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<ProjectTag> tags) {
+        this.tags = tags;
     }
 }
