@@ -2,8 +2,12 @@ package by.tasktracker.entity;
 
 import by.tasktracker.entity.superclass.NamedEntity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Task extends NamedEntity {
@@ -23,6 +27,10 @@ public class Task extends NamedEntity {
 
     @ManyToOne(targetEntity = User.class)
     private User developer;
+
+    @ManyToMany(targetEntity = TaskTag.class)
+    @NotNull
+    private Set<TaskTag> tags = new HashSet<>();
 
     protected Task() {}
 
@@ -87,5 +95,17 @@ public class Task extends NamedEntity {
 
     public void setDeveloper(User developer) {
         this.developer = developer;
+    }
+
+    public Set<TaskTag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<TaskTag> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(TaskTag tag) {
+        this.tags.add(tag);
     }
 }

@@ -2,6 +2,7 @@ package by.tasktracker.service;
 
 import by.tasktracker.entity.Task;
 import by.tasktracker.entity.TaskStatus;
+import by.tasktracker.entity.TaskTag;
 import by.tasktracker.entity.User;
 import by.tasktracker.repository.TaskRepository;
 import by.tasktracker.service.supeclass.NamedServiceImpl;
@@ -12,7 +13,10 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl extends NamedServiceImpl<Task, TaskRepository> implements TaskService {
@@ -20,6 +24,8 @@ public class TaskServiceImpl extends NamedServiceImpl<Task, TaskRepository> impl
     private TaskService taskService = this;
     @Autowired
     private TaskStatusService taskStatusService;
+    @Autowired
+    private TaskTagService taskTagService;
 
     @Override
     public Task save(@Valid Task task) {
@@ -90,6 +96,26 @@ public class TaskServiceImpl extends NamedServiceImpl<Task, TaskRepository> impl
                 task.setStatus(null);
                 break;
         }
+        return taskService.save(task);
+    }
+
+    @Override
+    public Task editTags(String taskId, Set<TaskTag> taskTags) {
+        Task task = taskService.get(taskId);
+        if (task.getTags() == null){
+            task.setTags(new HashSet<>());
+        }
+
+        Set<TaskTag> newTags = task.getTags();
+        taskTags.stream().filter(tag -> !newTags.contains(tag)).forEach(tag -> {
+            taskTagService.save(tag);
+            newTags.add(tag);
+        });
+
+        Set<TaskTag> tagsForRemove = task.getTags().stream().filter(oldTag -> !taskTags.contains(oldTag)).collect(Collectors.toSet());
+        newTags.removeAll(tagsForRemove);
+
+        task.setTags(newTags);
         return taskService.save(task);
     }
 }

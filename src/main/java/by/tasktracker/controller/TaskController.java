@@ -11,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class TaskController {
             case "developer":
                 return service.getByDeveloperId(id, page, size);
             default:
-                return new PageImpl<Task>(new ArrayList<>());
+                return new PageImpl<>(new ArrayList<>());
         }
     }
 
@@ -71,7 +70,7 @@ public class TaskController {
     }
 
     @Deprecated
-    @RequestMapping(value = "/switchStatus/{taskId}" ,method = RequestMethod.PUT)
+    @RequestMapping(value = "/switchStatus/{taskId}", method = RequestMethod.PUT)
     public Task switchStatus(@AuthenticationPrincipal User activeUser,
                              @PathVariable("taskId") String  taskId,
                              HttpServletResponse response) {
@@ -80,7 +79,7 @@ public class TaskController {
         return service.switchStatus(taskId);
     }
 
-    @RequestMapping(value = "/setStatus/{taskId}" ,method = RequestMethod.PUT)
+    @RequestMapping(value = "/setStatus/{taskId}", method = RequestMethod.PUT)
     public Task setStatus(@AuthenticationPrincipal User activeUser,
                           @PathVariable("taskId") String  taskId,
                           @RequestBody String statusId,
@@ -90,11 +89,16 @@ public class TaskController {
         return service.setStatus(taskId, statusId);
     }
 
-    @RequestMapping(value = "/selectDeveloper/{taskId}" ,method = RequestMethod.PUT)
+    @RequestMapping(value = "/selectDeveloper/{taskId}", method = RequestMethod.PUT)
     public Task setDeveloper(@PathVariable("taskId") String  taskId,
                              @RequestBody(required = false) User developer)
     {
         return service.setDeveloper(taskId, developer);
+    }
+    @RequestMapping(value = "/tags", method = RequestMethod.POST)
+    public Task addTag(@AuthenticationPrincipal User activeUser,
+                       @RequestBody Task task) {
+        return service.editTags(task.getId(), task.getTags());
     }
 
 }
