@@ -62,6 +62,11 @@ public class TaskServiceImpl extends NamedServiceImpl<Task, TaskRepository> impl
     }
 
     @Override
+    public List<Task> getByTag(String tag) {
+        return repository.findByTag(tag);
+    }
+
+    @Override
     public Task setDeveloper(String taskId, User developer) {
         Task task = repository.findOne(taskId);
         task.setDeveloper(developer);

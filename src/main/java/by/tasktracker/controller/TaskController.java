@@ -62,6 +62,11 @@ public class TaskController {
         }
     }
 
+    @RequestMapping(value = "/byTag/{tag}", method = RequestMethod.GET)
+    public List<Task> getByTag(@PathVariable("tag") String tag){
+        return service.getByTag(tag);
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public Task add(@AuthenticationPrincipal User activeUser,
                     @RequestBody Task task){
