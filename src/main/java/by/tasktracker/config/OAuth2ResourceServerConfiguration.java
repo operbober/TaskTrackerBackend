@@ -15,11 +15,8 @@ public class OAuth2ResourceServerConfiguration extends ResourceServerConfigurerA
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/users/me").authenticated()
-                .antMatchers(HttpMethod.POST, "/api/projects").hasRole("MANAGER")
-                .antMatchers("/api/users/**").hasRole("MANAGER")
-                .antMatchers(HttpMethod.PUT, "/api/tasks/switchStatus/**").hasRole("DEVELOPER")
-                .antMatchers("/api/comments/**").hasRole("DEVELOPER")
-                .antMatchers("/api/**").authenticated();
+                .antMatchers("/api/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/users/me").authenticated();
+
     }
 }

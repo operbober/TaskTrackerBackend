@@ -1,41 +1,61 @@
 package by.tasktracker.service;
 
-import by.tasktracker.entity.Role;
+import by.tasktracker.dto.UserDTO;
 import by.tasktracker.entity.User;
+import by.tasktracker.exceptions.UserForActivationNotFoundException;
 import by.tasktracker.repository.UserRepository;
 import by.tasktracker.service.supeclass.CommonServiceImpl;
+import by.tasktracker.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> implements UserService {
 
-    @Autowired
-    RoleService roleService;
+    @Autowired private MailService mailService;
 
     @Override
-    public User saveDeveloper(User user) {
-        Role roleDeveloper = roleService.getByName(Role.ROLE_DEVELOPER);
-        user.setRole(roleDeveloper);
-        return repository.save(user);
+    public User getByName(String name) {
+        return repository.findByNameIgnoreCase(name);
     }
 
     @Override
-    public User getByUsername(String username) {
-        return repository.findByUsernameIgnoreCase(username);
+    public User getByEmail(String email) {
+        return repository.findByEmail(email);
     }
 
     @Override
-    public List<User> getByRoleName(String roleName) {
-        return repository.findByRoleNameIgnoreCase(roleName);
+    public User getByActivationCode(String activationCode) {
+        return repository.findByActivationCode(activationCode);
     }
 
     @Override
-    public Page<User> getByRoleName(String roleName, int page, int size) {
-        return repository.findByRoleNameIgnoreCase(roleName, new PageRequest(page, size));
+    public User registerNewUser(UserDTO userDTO) {
+            User newUser = save(new User(
+                    userDTO.getName(),
+                    userDTO.getEmail(),
+                    encryptPassword(userDTO.getPassword())
+            ));
+            mailService.sendEmail(
+                    newUser.getEmail(),
+                    "Activate account",
+                    String.format("http://localhost:3000/api/users/%s", newUser.getActivationCode()));
+            return newUser;
+    }
+
+    private String encryptPassword(String nakedPassword){
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder.encode(nakedPassword);
+    }
+
+    @Override
+    public User activateUser(String activateCode) throws UserForActivationNotFoundException {
+        User user = getByActivationCode(activateCode);
+        if (user == null) {
+            throw new UserForActivationNotFoundException();
+        }
+        user.setActivationCodeNull();
+        return save(user);
     }
 }

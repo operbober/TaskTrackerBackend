@@ -1,8 +1,7 @@
 package by.tasktracker.utils;
 
-import by.tasktracker.entity.Role;
 import by.tasktracker.entity.User;
-import by.tasktracker.repository.UserRepository;
+import by.tasktracker.service.UserService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,20 +11,24 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 
 @Service
 public class CommonUserDetailService implements UserDetailsService {
 
-    @Autowired
-    UserRepository userRepository;
+    @Autowired private UserService service;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsernameIgnoreCase(username);
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+        User user = service.getByName(name);
         if (user == null) {
-            throw new UsernameNotFoundException(String.format("User %s does not exist!", username));
+            user = service.getByEmail(name);
+        }
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("User %s does not exist!", name));
+        }
+        if (user.getActivationCode() != null) {
+            throw new UsernameNotFoundException(String.format("User %s does not activated!", name));
         }
         return new UserRepositoryUserDetails(user);
     }
@@ -33,14 +36,19 @@ public class CommonUserDetailService implements UserDetailsService {
     private final static class UserRepositoryUserDetails extends User implements UserDetails {
 
         private UserRepositoryUserDetails(User user) {
-            super(user.getUsername(), user.getPassword(), user.getRole());
+            super(user.getName(), user.getEmail(), user.getPassword());
             setId(user.getId());
         }
 
         @JsonIgnore
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            return new HashSet<Role>(Collections.singletonList(getRole()));
+            return new HashSet<>();
+        }
+
+        @Override
+        public String getUsername() {
+            return this.getEmail();
         }
 
         @JsonIgnore

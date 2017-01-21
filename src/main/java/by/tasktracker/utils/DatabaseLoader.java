@@ -1,6 +1,5 @@
 package by.tasktracker.utils;
 
-import by.tasktracker.entity.*;
 import by.tasktracker.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -34,7 +33,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        Role roleManager = roleService.save(new Role(Role.ROLE_MANAGER));
+/*        Role roleManager = roleService.save(new Role(Role.ROLE_MANAGER));
         Role roleDeveloper = roleService.save(new Role(Role.ROLE_DEVELOPER));
 
         TaskStatus taskStatusOpen = taskStatusService.save(new TaskStatus(TaskStatus.OPEN));
@@ -44,7 +43,7 @@ public class DatabaseLoader implements CommandLineRunner {
         User manager = userService.save(new User("boss", "1234", roleManager));
         User backEndDev =  userService.save(new User("backendDeveloper", "backendonelove", roleDeveloper));
         User frontEndDev = userService.save(new User("frontendDeveloper", "frontendonelove", roleDeveloper));
-            User fullStackDev = userService.save(new User("fullstackDeveloper", "fuckingfullstack", roleDeveloper));
+        User fullStackDev = userService.save(new User("fullstackDeveloper", "fuckingfullstack", roleDeveloper));
 
         Project easyProject = projectService.save(new Project("Easy project", "very easy project", manager));
         Project hardProject = projectService.save(new Project("Hard project", "very hard project", manager));
@@ -59,6 +58,6 @@ public class DatabaseLoader implements CommandLineRunner {
         commentService.save(new Comment(frontEndDev, secondTaskHardProject, "Good."));
 
         commentService.save(new Comment(frontEndDev, firstTaskEasyProject, "Plz do it fast"));
-        commentService.save(new Comment(backEndDev, firstTaskEasyProject, "OK, Easy."));
+        commentService.save(new Comment(backEndDev, firstTaskEasyProject, "OK, Easy."));*/
     }
 }
