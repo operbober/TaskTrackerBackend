@@ -1,4 +1,4 @@
-package by.tasktracker.utils;
+package by.tasktracker.security;
 
 import by.tasktracker.entity.User;
 import by.tasktracker.service.UserService;
@@ -37,7 +37,6 @@ public class CommonUserDetailService implements UserDetailsService {
 
         private UserRepositoryUserDetails(User user) {
             super(user.getName(), user.getEmail(), user.getPassword());
-            setId(user.getId());
         }
 
         @JsonIgnore
@@ -74,6 +73,5 @@ public class CommonUserDetailService implements UserDetailsService {
         public boolean isEnabled() {
             return true;
         }
-
     }
 }

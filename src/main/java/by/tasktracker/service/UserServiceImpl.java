@@ -7,13 +7,15 @@ import by.tasktracker.repository.UserRepository;
 import by.tasktracker.service.supeclass.CommonServiceImpl;
 import by.tasktracker.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> implements UserService {
 
     @Autowired private MailService mailService;
+
+    @Autowired private PasswordEncoder passwordEncoder;
 
     @Override
     public User getByName(String name) {
@@ -35,7 +37,7 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
             User newUser = save(new User(
                     userDTO.getName(),
                     userDTO.getEmail(),
-                    encryptPassword(userDTO.getPassword())
+                    passwordEncoder.encode(userDTO.getPassword())
             ));
             mailService.sendEmail(
                     newUser.getEmail(),
@@ -44,10 +46,6 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
             return newUser;
     }
 
-    private String encryptPassword(String nakedPassword){
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder.encode(nakedPassword);
-    }
 
     @Override
     public User activateUser(String activateCode) throws UserForActivationNotFoundException {

@@ -1,38 +1,29 @@
 package by.tasktracker.utils;
 
-import by.tasktracker.service.*;
+import by.tasktracker.entity.User;
+import by.tasktracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DatabaseLoader implements CommandLineRunner {
 
-    private final UserService userService;
-    private final RoleService roleService;
-    private final ProjectService projectService;
-    private final TaskService taskService;
-    private final CommentService commentService;
-    private final TaskStatusService taskStatusService;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
-    public DatabaseLoader(UserService userService,
-                          RoleService roleService,
-                          ProjectService projectService,
-                          TaskService taskService,
-                          CommentService commentService,
-                          TaskStatusService taskStatusService) {
-        this.userService = userService;
-        this.roleService = roleService;
-        this.projectService = projectService;
-        this.taskService = taskService;
-        this.commentService = commentService;
-        this.taskStatusService = taskStatusService;
-    }
+    private PasswordEncoder passwordEncoder;
 
 
     @Override
     public void run(String... strings) throws Exception {
+
+        User testUser = new User("testuser", "test@mail.by", passwordEncoder.encode("interOP@123"));
+        testUser.setActivationCodeNull();
+        userRepository.save(testUser);
+
 /*        Role roleManager = roleService.save(new Role(Role.ROLE_MANAGER));
         Role roleDeveloper = roleService.save(new Role(Role.ROLE_DEVELOPER));
 

@@ -1,4 +1,4 @@
-package by.tasktracker.config;
+package by.tasktracker.security;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;

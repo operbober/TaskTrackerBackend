@@ -4,6 +4,10 @@ import by.tasktracker.utils.MailService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
 @SpringBootApplication
 public class Application {
@@ -22,5 +26,15 @@ public class Application {
 				System.getenv(TASK_TRACKER_EMAIL),
 				System.getenv(TASK_TRACKER_EMAIL_PASSWORD)
 		);
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public TokenStore keyStroke() {
+		return new InMemoryTokenStore();
 	}
 }

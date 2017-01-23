@@ -14,7 +14,7 @@ public class TaskTagServiceImpl extends NamedServiceImpl<TaskTag, TaskTagReposit
     public TaskTag save(@Valid TaskTag entity) {
         TaskTag taskTag = getByName(entity.getName());
         if (getByName(entity.getName()) != null){
-            entity.setId(taskTag.getId());
+            //entity.setId(taskTag.getId());
             return taskTag;
         }
         return super.save(entity);
