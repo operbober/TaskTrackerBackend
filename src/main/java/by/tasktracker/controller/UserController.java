@@ -35,7 +35,7 @@ public class UserController {
         try {
             user = service.activateUser(activationCode);
         } catch (UserForActivationNotFoundException e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bad activation link!");
         }
         return user;
     }
