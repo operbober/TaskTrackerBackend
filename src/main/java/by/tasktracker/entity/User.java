@@ -40,6 +40,14 @@ public class User extends CommonEntity {
         activationCode = UUID.randomUUID().toString();
     }
 
+    public User(User user) {
+        super(user.getId());
+        this.name = user.getName();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        activationCode = UUID.randomUUID().toString();
+    }
+
     public String getName() {
         return name;
     }

@@ -3,33 +3,31 @@ package by.tasktracker.entity;
 import by.tasktracker.entity.superclass.NamedEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @Entity
 public class Project extends NamedEntity {
+
+    @Size(max = 300)
     private String description;
 
     @ManyToOne(targetEntity = User.class)
     @NotNull
-    private User creator;
-
-    @ManyToMany(targetEntity = ProjectTag.class)
-    private Set<ProjectTag> tags;
+    private User owner;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
-    private List<Task> tasks = new ArrayList<>();
+    private String deleteCode = null;
 
-    protected Project() {}
+    public Project() {}
 
-    public Project(String name, String description, User creator) {
+    public Project(String name, String description, User owner) {
         super(name);
         this.description = description;
-        this.creator = creator;
+        this.owner = owner;
     }
 
     public String getDescription() {
@@ -40,23 +38,21 @@ public class Project extends NamedEntity {
         this.description = description;
     }
 
-    public User getCreator() {
-        return creator;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setCreator(User creator) {
-        this.creator = creator;
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
-    public List<Task> getTasks() {
-        return tasks;
+    public void generateDeleteCode() {
+        if (deleteCode == null) {
+            this.deleteCode = UUID.randomUUID().toString();
+        }
     }
 
-    public Set<ProjectTag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<ProjectTag> tags) {
-        this.tags = tags;
+    public String getDeleteCode() {
+        return deleteCode;
     }
 }

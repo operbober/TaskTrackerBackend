@@ -35,9 +35,7 @@ public class CommonUserDetailService implements UserDetailsService {
 
     private final static class UserRepositoryUserDetails extends User implements UserDetails {
 
-        private UserRepositoryUserDetails(User user) {
-            super(user.getName(), user.getEmail(), user.getPassword());
-        }
+        private UserRepositoryUserDetails(User user) {super(user);}
 
         @JsonIgnore
         @Override
@@ -45,6 +43,7 @@ public class CommonUserDetailService implements UserDetailsService {
             return new HashSet<>();
         }
 
+        @JsonIgnore
         @Override
         public String getUsername() {
             return this.getEmail();

@@ -13,10 +13,15 @@ public class CommonEntity {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
+    protected CommonEntity() {
+    }
+
+    public CommonEntity(String id) {
+        this.id = id;
+    }
+
     public String  getId() {
         return id;
     }
 
-    protected CommonEntity() {
-    }
 }
