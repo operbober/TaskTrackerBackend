@@ -1,16 +1,20 @@
 package by.tasktracker.service;
 
+import by.tasktracker.dto.AddProjectDTO;
+import by.tasktracker.dto.DeleteProjectDTO;
+import by.tasktracker.dto.EditProjectDTO;
 import by.tasktracker.entity.Project;
-import by.tasktracker.entity.ProjectTag;
+import by.tasktracker.entity.User;
+import by.tasktracker.exceptions.BadConfirmationCodeException;
 import by.tasktracker.service.supeclass.NamedService;
+import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-import java.util.Set;
-
 public interface ProjectService extends NamedService<Project> {
-    List<Project> getByTaskUserId(String userId);
-    Page<Project> getByTaskUserId(String userId, int page, int size);
-    List<Project> getByTag(String tag);
-    Project editTags(String projectId, Set<ProjectTag> tags);
+
+    Project save(AddProjectDTO projectDTO, User owner);
+    Project update(EditProjectDTO projectDTO, User owner) throws NotFoundException;
+    void sendDeleteCode(String projectId, User owner) throws NotFoundException;
+    void delete(DeleteProjectDTO projectDTO, User owner) throws NotFoundException, BadConfirmationCodeException;
+    Page<Project> getOwnerProjects(User owner, int page, int size);
 }

@@ -1,58 +1,76 @@
 package by.tasktracker.service;
 
+import by.tasktracker.dto.AddProjectDTO;
+import by.tasktracker.dto.DeleteProjectDTO;
+import by.tasktracker.dto.EditProjectDTO;
 import by.tasktracker.entity.Project;
-import by.tasktracker.entity.ProjectTag;
+import by.tasktracker.entity.User;
+import by.tasktracker.exceptions.BadConfirmationCodeException;
 import by.tasktracker.repository.ProjectRepository;
 import by.tasktracker.service.supeclass.NamedServiceImpl;
+import by.tasktracker.utils.MailService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Service
 public class ProjectServiceImpl extends NamedServiceImpl<Project, ProjectRepository> implements ProjectService {
-    
-    private ProjectService projectService = this;
-    @Autowired
-    private ProjectTagService projectTagService;
-    
+
+    @Autowired private MailService mailService;
+
     @Override
-    public List<Project> getByTaskUserId(String userId) {
-        return repository.findByTasksDeveloperId(userId);
+    public Project save(AddProjectDTO projectDTO, User user) {
+        return save(new Project(
+                projectDTO.getName(),
+                projectDTO.getDescription() == null ? null : projectDTO.getDescription().isEmpty() ? null : projectDTO.getDescription(),
+                user
+        ));
     }
 
     @Override
-    public Page<Project> getByTaskUserId(String userId, int page, int size) {
-        return repository.findByTasksDeveloperId(userId, new PageRequest(page, size));
+    public Project update(EditProjectDTO projectDTO, User owner) throws NotFoundException {
+        Project project = getProjectIfExist(projectDTO.getId(), owner);
+        if (projectDTO.getName() != null)
+            project.setName(projectDTO.getName());
+        if (projectDTO.getDescription() != null)
+            project.setDescription(projectDTO.getDescription());
+        return save(project);
     }
 
     @Override
-    public List<Project> getByTag(String tag) {
-        return repository.findByTag(tag);
+    public void sendDeleteCode(String projectId, User owner) throws NotFoundException {
+        Project project = getProjectIfExist(projectId, owner);
+        project.generateDeleteCode();
+        save(project);
+        mailService.sendEmail(
+                owner.getEmail(),
+                "Delete project " + project.getName() + "code",
+                project.getDeleteCode()
+        );
     }
 
     @Override
-    public Project editTags(String projectId, Set<ProjectTag> tags) {
-        Project project = projectService.get(projectId);
-        if (project.getTags() == null){
-            project.setTags(new HashSet<>());
+    public void delete(DeleteProjectDTO projectDTO, User owner) throws NotFoundException, BadConfirmationCodeException {
+        Project project = getProjectIfExist(projectDTO.getId(), owner);
+        if (projectDTO.getDeleteCode().equals(project.getDeleteCode())) {
+            delete(project.getId());
+        } else {
+            throw new BadConfirmationCodeException();
         }
+    }
 
-        Set<ProjectTag> newTags = project.getTags();
-        tags.stream().filter(tag -> !newTags.contains(tag)).forEach(tag -> {
-            projectTagService.save(tag);
-            newTags.add(tag);
-        });
+    @Override
+    public Page<Project> getOwnerProjects(User owner, int page, int size) {
+        return repository.findByOwner(owner, new PageRequest(page, size));
+    }
 
-        Set<ProjectTag> tagsForRemove = project.getTags().stream().filter(oldTag -> !tags.contains(oldTag)).collect(Collectors.toSet());
-        newTags.removeAll(tagsForRemove);
-
-        project.setTags(newTags);
-        return projectService.save(project);
+    private Project getProjectIfExist(String id, User owner) throws NotFoundException {
+        Project project = repository.findByIdAndOwner(id, owner);
+        if (project == null) {
+            throw new NotFoundException("Project not found!");
+        }
+        return project;
     }
 }

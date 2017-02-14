@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 public class NamedEntity extends CommonEntity {
     @Column(name = "name")
     @NotNull
-    @Size(min = 3, max = 32)
+    @Size(min = 4, max = 16)
     private String name;
 
     protected NamedEntity() {
