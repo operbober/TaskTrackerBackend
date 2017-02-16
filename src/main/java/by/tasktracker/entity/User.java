@@ -1,6 +1,7 @@
 package by.tasktracker.entity;
 
 import by.tasktracker.entity.superclass.CommonEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Email;
@@ -8,6 +9,7 @@ import org.hibernate.validator.constraints.Email;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.UUID;
 
 
@@ -26,26 +28,27 @@ public class User extends CommonEntity {
     @NotNull
     private String password;
 
+    @JsonFormat(pattern = "MM/dd/yyyy")
+    private Date signUpDate;
+
     @JsonIgnore
     private String activationCode;
 
-    protected User(){
+    private User(){
+        signUpDate = new Date();
         activationCode = UUID.randomUUID().toString();
     }
 
     public User(String name, String email, String password) {
+        this();
         this.name = name;
         this.email = email;
         this.password = password;
-        activationCode = UUID.randomUUID().toString();
     }
 
     public User(User user) {
-        super(user.getId());
-        this.name = user.getName();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
-        activationCode = UUID.randomUUID().toString();
+        this(user.getName(), user.getEmail(), user.getPassword());
+        setId(user.getId());
     }
 
     public String getName() {
@@ -78,5 +81,9 @@ public class User extends CommonEntity {
 
     public void setActivationCodeNull() {
         activationCode = null;
+    }
+
+    public Date getSignUpDate() {
+        return signUpDate;
     }
 }

@@ -16,7 +16,7 @@ public class CommonEntity {
     protected CommonEntity() {
     }
 
-    public CommonEntity(String id) {
+    protected void setId(String id) {
         this.id = id;
     }
 
