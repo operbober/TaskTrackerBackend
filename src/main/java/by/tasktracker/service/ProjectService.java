@@ -12,9 +12,9 @@ import org.springframework.data.domain.Page;
 
 public interface ProjectService extends NamedService<Project> {
 
-    Project save(AddProjectDTO projectDTO, User owner);
-    Project update(EditProjectDTO projectDTO, User owner) throws NotFoundException;
-    void sendDeleteCode(String projectId, User owner) throws NotFoundException;
-    void delete(DeleteProjectDTO projectDTO, User owner) throws NotFoundException, BadConfirmationCodeException;
     Page<Project> getOwnerProjects(User owner, int page, int size);
+    Project save(AddProjectDTO projectDTO, User owner);
+    Project update(EditProjectDTO projectDTO) throws NotFoundException;
+    void sendDeleteCode(String projectId) throws NotFoundException;
+    void delete(DeleteProjectDTO projectDTO) throws NotFoundException, BadConfirmationCodeException;
 }

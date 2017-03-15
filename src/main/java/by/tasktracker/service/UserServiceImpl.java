@@ -2,10 +2,10 @@ package by.tasktracker.service;
 
 import by.tasktracker.dto.UserDTO;
 import by.tasktracker.entity.User;
-import by.tasktracker.exceptions.UserForActivationNotFoundException;
 import by.tasktracker.repository.UserRepository;
 import by.tasktracker.service.supeclass.CommonServiceImpl;
 import by.tasktracker.utils.MailService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,10 +48,10 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 
 
     @Override
-    public User activateUser(String activateCode) throws UserForActivationNotFoundException {
+    public User activateUser(String activateCode) throws NotFoundException {
         User user = getByActivationCode(activateCode);
         if (user == null) {
-            throw new UserForActivationNotFoundException();
+            throw new NotFoundException("Bad activation link!");
         }
         user.setActivationCodeNull();
         return save(user);

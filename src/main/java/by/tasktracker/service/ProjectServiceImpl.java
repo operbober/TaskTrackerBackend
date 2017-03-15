@@ -30,8 +30,8 @@ public class ProjectServiceImpl extends NamedServiceImpl<Project, ProjectReposit
     }
 
     @Override
-    public Project update(EditProjectDTO projectDTO, User owner) throws NotFoundException {
-        Project project = getProjectIfExist(projectDTO.getId(), owner);
+    public Project update(EditProjectDTO projectDTO) throws NotFoundException {
+        Project project = get(projectDTO.getProjectId());
         if (projectDTO.getName() != null)
             project.setName(projectDTO.getName());
         if (projectDTO.getDescription() != null)
@@ -40,20 +40,20 @@ public class ProjectServiceImpl extends NamedServiceImpl<Project, ProjectReposit
     }
 
     @Override
-    public void sendDeleteCode(String projectId, User owner) throws NotFoundException {
-        Project project = getProjectIfExist(projectId, owner);
+    public void sendDeleteCode(String projectId) throws NotFoundException {
+        Project project = get(projectId);
         project.generateDeleteCode();
         save(project);
         mailService.sendEmail(
-                owner.getEmail(),
+                project.getOwner().getEmail(),
                 "Delete project " + project.getName() + "code",
                 project.getDeleteCode()
         );
     }
 
     @Override
-    public void delete(DeleteProjectDTO projectDTO, User owner) throws NotFoundException, BadConfirmationCodeException {
-        Project project = getProjectIfExist(projectDTO.getId(), owner);
+    public void delete(DeleteProjectDTO projectDTO) throws NotFoundException, BadConfirmationCodeException {
+        Project project = get(projectDTO.getProjectId());
         if (projectDTO.getDeleteCode().equals(project.getDeleteCode())) {
             delete(project.getId());
         } else {
@@ -64,13 +64,5 @@ public class ProjectServiceImpl extends NamedServiceImpl<Project, ProjectReposit
     @Override
     public Page<Project> getOwnerProjects(User owner, int page, int size) {
         return repository.findByOwner(owner, new PageRequest(page, size));
-    }
-
-    private Project getProjectIfExist(String id, User owner) throws NotFoundException {
-        Project project = repository.findByIdAndOwner(id, owner);
-        if (project == null) {
-            throw new NotFoundException("Project not found!");
-        }
-        return project;
     }
 }

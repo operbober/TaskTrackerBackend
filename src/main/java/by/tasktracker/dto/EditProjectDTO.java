@@ -1,7 +1,6 @@
 package by.tasktracker.dto;
 
 import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -9,10 +8,7 @@ import javax.validation.constraints.Size;
  *
  * Created by malets on 1/26/2017.
  */
-public class EditProjectDTO {
-
-    @NotNull
-    private String id;
+public class EditProjectDTO extends ProjectIdDTO{
 
     @Size(min = 4, max = 16)
     private String name;
@@ -23,14 +19,6 @@ public class EditProjectDTO {
     @AssertTrue(message = "all editable parameters is null")
     private boolean isFieldsNotNull() {
         return description != null || name != null;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {

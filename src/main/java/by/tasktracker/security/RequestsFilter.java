@@ -1,5 +1,6 @@
 package by.tasktracker.security;
 
+import by.tasktracker.utils.MultiReadHttpServletRequest;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -11,9 +12,9 @@ import java.io.IOException;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class OptionsRequestsFilter implements Filter {
+public class RequestsFilter implements Filter {
 
-    public OptionsRequestsFilter() {
+    public RequestsFilter() {
     }
 
     @Override
@@ -30,7 +31,8 @@ public class OptionsRequestsFilter implements Filter {
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            chain.doFilter(req, res);
+            MultiReadHttpServletRequest multiReadHttpServletRequest = new MultiReadHttpServletRequest(request);
+            chain.doFilter(multiReadHttpServletRequest, res);
         }
     }
 

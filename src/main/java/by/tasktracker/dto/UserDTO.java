@@ -13,19 +13,19 @@ import javax.validation.constraints.Size;
  */
 public class UserDTO {
 
-    @NotNull
+    @NotNull(message = "email may not be null")
     @Email
     private String email;
 
-    @NotNull
+    @NotNull(message = "name may not be null")
     @Size(min = 4, max = 16)
     private String name;
 
-    @NotNull
+    @NotNull(message = "password may not be null")
     @Size(min = 8, max = 25)
     private String password;
 
-    @NotNull
+    @NotNull(message = "confirmPassword may not be null")
     @Size(min = 8, max = 25)
     private String confirmPassword;
 

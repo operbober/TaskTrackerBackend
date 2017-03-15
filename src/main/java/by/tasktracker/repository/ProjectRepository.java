@@ -16,6 +16,5 @@ public interface ProjectRepository extends NamedRepository<Project> {
 /*    @Query("select p from Project p join p.tags t where (t.name like :tag) group by p")
     List<Project> findByTag(@Param("tag")String tag);*/
 
-    Project findByIdAndOwner(String id, User owner);
     Page<Project> findByOwner(User owner, Pageable pageable);
 }
