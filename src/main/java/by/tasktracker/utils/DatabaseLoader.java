@@ -1,7 +1,13 @@
 package by.tasktracker.utils;
 
+import by.tasktracker.entity.Invite;
+import by.tasktracker.entity.InviteStatus;
+import by.tasktracker.entity.Project;
 import by.tasktracker.entity.User;
+import by.tasktracker.repository.InviteStatusRepository;
 import by.tasktracker.repository.UserRepository;
+import by.tasktracker.service.InviteService;
+import by.tasktracker.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,15 +20,37 @@ public class DatabaseLoader implements CommandLineRunner {
     private UserRepository userRepository;
 
     @Autowired
+    private ProjectService projectService;
+
+    @Autowired
+    private InviteService inviteService;
+
+    @Autowired
+    private InviteStatusRepository inviteStatusRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
 
     @Override
     public void run(String... strings) throws Exception {
 
-        User testUser = new User("testuser", "test@mail.by", passwordEncoder.encode("interOP@123"));
+        InviteStatus openInvite = inviteStatusRepository.save(new InviteStatus(InviteStatus.OPEN));
+        InviteStatus closeInvite = inviteStatusRepository.save(new InviteStatus(InviteStatus.CLOSE));
+
+        User testUser = new User("testuser", "testemil@mailinator.com", passwordEncoder.encode("interOP@123"));
         testUser.setActivationCodeNull();
         userRepository.save(testUser);
+
+        User ivan = new User("ivan", "ivan@mailinator.com", passwordEncoder.encode("interOP@123"));
+        ivan.setActivationCodeNull();
+        userRepository.save(ivan);
+
+        Project testProject = projectService.save(new Project("testProject", "", ivan));
+        System.out.println("test_project_id = " + testProject.getId());
+
+        Invite invite = inviteService.save(new Invite(testUser, testProject, openInvite));
+        System.out.println("invite_id = " + invite.getId());
 
 /*        Role roleManager = roleService.save(new Role(Role.ROLE_MANAGER));
         Role roleDeveloper = roleService.save(new Role(Role.ROLE_DEVELOPER));
