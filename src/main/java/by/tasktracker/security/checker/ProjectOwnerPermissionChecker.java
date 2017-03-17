@@ -1,29 +1,29 @@
-package by.tasktracker.security;
+package by.tasktracker.security.checker;
 
 
 import by.tasktracker.dto.ProjectIdDTO;
 import by.tasktracker.entity.Project;
 import by.tasktracker.entity.User;
 import by.tasktracker.exceptions.PermissionException;
+import by.tasktracker.security.PermissionChecker;
 import by.tasktracker.service.ProjectService;
-import com.google.gson.Gson;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
+
 @Component
-public class ProjectOwnerPermissionChecker implements PermissionChecker {
+public class ProjectOwnerPermissionChecker implements PermissionChecker<ProjectIdDTO> {
 
     @Autowired
     private ProjectService projectService;
 
     @Override
-    public void checkPermission(User user, String jsonBody) throws PermissionException, NotFoundException {
-        Gson gson = new Gson();
-        ProjectIdDTO projectIdDTO =  gson.fromJson(jsonBody, ProjectIdDTO.class);
+    public void checkPermission(User user, @Valid ProjectIdDTO projectIdDTO) throws PermissionException, NotFoundException {
         Project project = projectService.get(projectIdDTO.getProjectId());
         if(project == null) {
-            throw new NotFoundException("Project not found");
+            throw new NotFoundException("Project not found!");
         }
         if(!project.getOwner().getId().equals(user.getId())) {
             throw new PermissionException("Permission denied!");

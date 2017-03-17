@@ -6,7 +6,7 @@ import by.tasktracker.dto.EditProjectDTO;
 import by.tasktracker.entity.Project;
 import by.tasktracker.entity.User;
 import by.tasktracker.security.Permission;
-import by.tasktracker.security.ProjectOwnerPermissionChecker;
+import by.tasktracker.security.checker.ProjectOwnerPermissionChecker;
 import by.tasktracker.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

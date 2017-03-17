@@ -4,6 +4,7 @@ package by.tasktracker.config;
 import by.tasktracker.entity.User;
 import by.tasktracker.security.Permission;
 import by.tasktracker.security.PermissionChecker;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 
 @Component
 public class CommonInterceptor implements HandlerInterceptor{
@@ -34,10 +36,16 @@ public class CommonInterceptor implements HandlerInterceptor{
             Class<? extends PermissionChecker> permCheckerClass = method.getAnnotation(Permission.class).value();
             PermissionChecker permChecker = context.getBean(permCheckerClass);
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            permChecker.checkPermission(user, getBody(request));
+            Gson gson = new Gson();
+            Object object = gson.fromJson(getBody(request), getParameterClass(permCheckerClass));
+            permChecker.checkPermission(user, object);
         }
 
         return true;
+    }
+
+    private Class<?> getParameterClass(Class<? extends PermissionChecker> permCheckerClass) {
+        return (Class<?>)((ParameterizedType)permCheckerClass.getGenericInterfaces()[0]).getActualTypeArguments()[0];
     }
 
     private static String getBody(HttpServletRequest request) throws IOException {
