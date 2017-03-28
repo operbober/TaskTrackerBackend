@@ -31,7 +31,7 @@ public class UserDTO {
 
     @AssertTrue(message="password field should be equal confirmPassword field")
     private boolean isValid() {
-        return this.password.equals(this.confirmPassword);
+        return this.password == null || this.password.equals(this.confirmPassword);
     }
 
     public String getEmail() {
