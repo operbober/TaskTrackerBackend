@@ -1,9 +1,8 @@
-package by.tasktracker.config;
+package by.tasktracker.security;
 
 
 import by.tasktracker.entity.User;
-import by.tasktracker.security.Permission;
-import by.tasktracker.security.PermissionChecker;
+import by.tasktracker.exceptions.PermissionException;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 
 @Component
-public class CommonInterceptor implements HandlerInterceptor{
+public class PermissionInterceptor implements HandlerInterceptor{
 
     @Autowired
     private ApplicationContext context;
@@ -33,14 +32,16 @@ public class CommonInterceptor implements HandlerInterceptor{
         Method method = ((HandlerMethod) handler).getMethod();
 
         if (method.getAnnotation(Permission.class) != null) {
-            Class<? extends PermissionChecker> permCheckerClass = method.getAnnotation(Permission.class).value();
-            PermissionChecker permChecker = context.getBean(permCheckerClass);
+            Class<? extends PermissionChecker> permCheckerClasses[] = method.getAnnotation(Permission.class).value();
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Gson gson = new Gson();
-            Object object = gson.fromJson(getBody(request), getParameterClass(permCheckerClass));
-            permChecker.checkPermission(user, object);
+            for (Class<? extends PermissionChecker> permCheckerClass : permCheckerClasses) {
+                PermissionChecker permChecker = context.getBean(permCheckerClass);
+                Gson gson = new Gson();
+                Object object = gson.fromJson(getBody(request), getParameterClass(permCheckerClass));
+                if (permChecker.checkPermission(user, object)) return true;
+            }
+            throw new PermissionException();
         }
-
         return true;
     }
 

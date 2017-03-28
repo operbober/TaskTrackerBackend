@@ -8,8 +8,8 @@ import by.tasktracker.entity.User;
 import by.tasktracker.exceptions.PermissionException;
 import by.tasktracker.security.Permission;
 import by.tasktracker.security.checker.InviteUserChecker;
-import by.tasktracker.security.checker.InviteUserOrSenderChecker;
-import by.tasktracker.security.checker.ProjectOwnerPermissionChecker;
+import by.tasktracker.security.checker.InviteSenderChecker;
+import by.tasktracker.security.checker.ProjectOwnerChecker;
 import by.tasktracker.service.InviteService;
 import by.tasktracker.service.ProjectService;
 import javassist.NotFoundException;
@@ -43,12 +43,12 @@ public class InviteController {
         if (project == null) {
             throw new NotFoundException("Project not found!");
         } else if (!project.getOwner().getId().equals(user.getId())) {
-            throw new PermissionException("Permission denied!");
+            throw new PermissionException();
         }
         return service.getByProjectId(projectId, page, size);
     }
 
-    @Permission(ProjectOwnerPermissionChecker.class)
+    @Permission(ProjectOwnerChecker.class)
     @RequestMapping(method = RequestMethod.POST)
     public Invite invite(@AuthenticationPrincipal User user,
                       @RequestBody @Valid InviteDTO inviteDTO) throws Exception {
@@ -62,7 +62,7 @@ public class InviteController {
         return service.confirm(inviteIdDTO.getInviteId());
     }
 
-    @Permission(InviteUserOrSenderChecker.class)
+    @Permission({InviteSenderChecker.class, InviteUserChecker.class})
     @RequestMapping(method = RequestMethod.DELETE)
     public Invite close(@AuthenticationPrincipal User user,
                          @RequestBody InviteIdDTO inviteIdDTO) throws Exception {

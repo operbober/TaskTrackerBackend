@@ -6,7 +6,7 @@ import by.tasktracker.dto.EditProjectDTO;
 import by.tasktracker.entity.Project;
 import by.tasktracker.entity.User;
 import by.tasktracker.security.Permission;
-import by.tasktracker.security.checker.ProjectOwnerPermissionChecker;
+import by.tasktracker.security.checker.ProjectOwnerChecker;
 import by.tasktracker.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,14 +34,14 @@ public class ProjectController {
         return service.save(projectDTO, authorizedUser);
     }
 
-    @Permission(ProjectOwnerPermissionChecker.class)
+    @Permission(ProjectOwnerChecker.class)
     @RequestMapping(method = RequestMethod.PUT)
     public Project editProject(@RequestBody @Valid EditProjectDTO projectDTO,
                                @AuthenticationPrincipal User authorizedUser) throws Exception {
         return service.update(projectDTO);
     }
 
-    @Permission(ProjectOwnerPermissionChecker.class)
+    @Permission(ProjectOwnerChecker.class)
     @RequestMapping(method = RequestMethod.DELETE)
     public void deleteProject(@RequestBody @Valid DeleteProjectDTO projectDTO,
                               @AuthenticationPrincipal User authorizedUser) throws Exception {

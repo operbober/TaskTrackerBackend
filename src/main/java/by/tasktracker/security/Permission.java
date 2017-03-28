@@ -6,5 +6,5 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Documented
 public @interface Permission {
-    Class<? extends PermissionChecker> value();
+    Class<? extends PermissionChecker>[] value();
 }

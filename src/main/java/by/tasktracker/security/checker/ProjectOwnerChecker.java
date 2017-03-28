@@ -14,19 +14,18 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 
 @Component
-public class ProjectOwnerPermissionChecker implements PermissionChecker<ProjectIdDTO> {
+public class ProjectOwnerChecker implements PermissionChecker<ProjectIdDTO> {
 
     @Autowired
     private ProjectService projectService;
 
     @Override
-    public void checkPermission(User user, @Valid ProjectIdDTO projectIdDTO) throws PermissionException, NotFoundException {
+    public boolean checkPermission(User user, @Valid ProjectIdDTO projectIdDTO) throws PermissionException, NotFoundException {
         Project project = projectService.get(projectIdDTO.getProjectId());
         if(project == null) {
             throw new NotFoundException("Project not found!");
         }
-        if(!project.getOwner().getId().equals(user.getId())) {
-            throw new PermissionException("Permission denied!");
-        }
+
+        return project.getOwner().getId().equals(user.getId());
     }
 }
