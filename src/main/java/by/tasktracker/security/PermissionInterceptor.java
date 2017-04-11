@@ -25,6 +25,9 @@ import java.lang.reflect.ParameterizedType;
 public class PermissionInterceptor implements HandlerInterceptor{
 
     @Autowired
+    private static final String ANONYMOUS_USER = "anonymousUser";
+
+    @Autowired
     private ApplicationContext context;
 
     @Override
@@ -33,7 +36,10 @@ public class PermissionInterceptor implements HandlerInterceptor{
 
         if (method.getAnnotation(Permission.class) != null) {
             Class<? extends PermissionChecker> permCheckerClasses[] = method.getAnnotation(Permission.class).value();
-            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = SecurityContextHolder.getContext().getAuthentication().getPrincipal() == ANONYMOUS_USER
+                    ? null
+                    : (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
             for (Class<? extends PermissionChecker> permCheckerClass : permCheckerClasses) {
                 PermissionChecker permChecker = context.getBean(permCheckerClass);
                 Gson gson = new Gson();
