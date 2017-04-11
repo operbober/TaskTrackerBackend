@@ -17,4 +17,5 @@ public interface ProjectRepository extends NamedRepository<Project> {
     List<Project> findByTag(@Param("tag")String tag);*/
 
     Page<Project> findByOwner(User owner, Pageable pageable);
+    Page<Project> findByMembersId(String memberId, Pageable pageable);
 }

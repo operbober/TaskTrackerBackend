@@ -7,9 +7,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -33,6 +36,9 @@ public class User extends CommonEntity {
 
     @JsonIgnore
     private String activationCode;
+
+    @ManyToMany(mappedBy = "members", fetch = FetchType.LAZY)
+    private Set<Project> projects;
 
     private User(){
         signUpDate = new Date();

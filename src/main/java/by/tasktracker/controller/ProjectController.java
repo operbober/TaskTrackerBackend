@@ -1,13 +1,13 @@
 package by.tasktracker.controller;
 
-import by.tasktracker.dto.AddProjectDTO;
-import by.tasktracker.dto.DeleteProjectDTO;
-import by.tasktracker.dto.EditProjectDTO;
+import by.tasktracker.dto.*;
 import by.tasktracker.entity.Project;
 import by.tasktracker.entity.User;
 import by.tasktracker.security.Permission;
+import by.tasktracker.security.checker.ProjectMemberChecker;
 import by.tasktracker.security.checker.ProjectOwnerChecker;
 import by.tasktracker.service.ProjectService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,7 +25,7 @@ public class ProjectController {
     public Page<Project> getMyProjects(@AuthenticationPrincipal User authorizedUser,
                                        @PathVariable(value = "page") int page,
                                        @PathVariable(value = "size") int size) {
-        return service.getOwnerProjects(authorizedUser, page, size);
+        return service.getProjectsByMember(authorizedUser.getId(), page, size);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -36,15 +36,13 @@ public class ProjectController {
 
     @Permission(ProjectOwnerChecker.class)
     @RequestMapping(method = RequestMethod.PUT)
-    public Project editProject(@RequestBody @Valid EditProjectDTO projectDTO,
-                               @AuthenticationPrincipal User authorizedUser) throws Exception {
+    public Project editProject(@RequestBody @Valid EditProjectDTO projectDTO) throws Exception {
         return service.update(projectDTO);
     }
 
     @Permission(ProjectOwnerChecker.class)
     @RequestMapping(method = RequestMethod.DELETE)
-    public void deleteProject(@RequestBody @Valid DeleteProjectDTO projectDTO,
-                              @AuthenticationPrincipal User authorizedUser) throws Exception {
+    public void deleteProject(@RequestBody @Valid DeleteProjectDTO projectDTO) throws Exception {
         if(projectDTO.getDeleteCode() == null) {
             service.sendDeleteCode(projectDTO.getProjectId());
         } else
@@ -52,4 +50,17 @@ public class ProjectController {
         }
     }
 
+    @Permission({ProjectOwnerChecker.class, ProjectMemberChecker.class})
+    @RequestMapping(value = "/members/{page}/{size}", method = RequestMethod.POST)
+    public Page<User> getMembers(@RequestBody ProjectIdDTO projectIdDTO,
+                                 @PathVariable(value = "page") int page,
+                                 @PathVariable(value = "size") int size) {
+        return service.getMembers(projectIdDTO.getProjectId(), page, size);
+    }
+
+    @Permission({ProjectOwnerChecker.class})
+    @RequestMapping(value = "/members", method = RequestMethod.DELETE)
+    public void deleteMember(@RequestBody DeleteProjectMemberDTO deleteProjectMemberDTO) throws NotFoundException {
+        service.deleteMember(deleteProjectMemberDTO.getProjectId(), deleteProjectMemberDTO.getUserId());
+    }
 }

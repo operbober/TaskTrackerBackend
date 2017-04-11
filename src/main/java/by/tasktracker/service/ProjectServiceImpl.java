@@ -10,23 +10,32 @@ import by.tasktracker.repository.ProjectRepository;
 import by.tasktracker.service.supeclass.NamedServiceImpl;
 import by.tasktracker.utils.MailService;
 import javassist.NotFoundException;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 public class ProjectServiceImpl extends NamedServiceImpl<Project, ProjectRepository> implements ProjectService {
+
+    @Autowired private UserService userService;
 
     @Autowired private MailService mailService;
 
     @Override
     public Project save(AddProjectDTO projectDTO, User user) {
-        return save(new Project(
+        Project project = new Project(
                 projectDTO.getName(),
                 projectDTO.getDescription() == null ? null : projectDTO.getDescription().isEmpty() ? null : projectDTO.getDescription(),
                 user
-        ));
+        );
+        project.setMembers(new HashSet<>(Collections.singletonList(user)));
+        return save(project);
     }
 
     @Override
@@ -62,7 +71,36 @@ public class ProjectServiceImpl extends NamedServiceImpl<Project, ProjectReposit
     }
 
     @Override
-    public Page<Project> getOwnerProjects(User owner, int page, int size) {
+    public Page<Project> getProjectsByOwner(User owner, int page, int size) {
         return repository.findByOwner(owner, new PageRequest(page, size));
+    }
+
+    @Override
+    public Page<Project> getProjectsByMember(String userId, int page, int size) {
+        return repository.findByMembersId(userId, new PageRequest(page, size));
+    }
+
+    @Override
+    public Page<User> getMembers(String projectId, int page, int size) {
+        return userService.getByProject(projectId, page, size);
+    }
+
+    @Override
+    public void deleteMember(String projectId, String memberId) throws NotFoundException {
+        Project project = get(projectId);
+        if (project.getOwner().getId().equals(memberId)) return;
+
+        Hibernate.initialize(project.getMembers());
+        Set<User> members = project.getMembers();
+        for (User member : members) {
+            if (member.getId().equals(memberId)) {
+                members.remove(member);
+                project.setMembers(members);
+                save(project);
+                return;
+            }
+        }
+
+        throw new NotFoundException("Member not found");
     }
 }
