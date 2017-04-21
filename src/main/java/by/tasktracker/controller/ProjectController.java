@@ -31,13 +31,13 @@ public class ProjectController {
     @RequestMapping(method = RequestMethod.POST)
     public Project addProject(@RequestBody @Valid AddProjectDTO projectDTO,
                               @AuthenticationPrincipal User authorizedUser) {
-        return service.save(projectDTO, authorizedUser);
+        return service.save(projectDTO.getName(), projectDTO.getDescription(), authorizedUser);
     }
 
     @Permission(ProjectOwnerChecker.class)
     @RequestMapping(method = RequestMethod.PUT)
     public Project editProject(@RequestBody @Valid EditProjectDTO projectDTO) throws Exception {
-        return service.update(projectDTO);
+        return service.update(projectDTO.getProjectId(), projectDTO.getName(), projectDTO.getDescription());
     }
 
     @Permission(ProjectOwnerChecker.class)
@@ -46,7 +46,7 @@ public class ProjectController {
         if(projectDTO.getDeleteCode() == null) {
             service.sendDeleteCode(projectDTO.getProjectId());
         } else
-            service.delete(projectDTO); {
+            service.delete(projectDTO.getProjectId(), projectDTO.getDeleteCode()); {
         }
     }
 

@@ -1,8 +1,5 @@
 package by.tasktracker.service;
 
-import by.tasktracker.dto.AddProjectDTO;
-import by.tasktracker.dto.DeleteProjectDTO;
-import by.tasktracker.dto.EditProjectDTO;
 import by.tasktracker.entity.Project;
 import by.tasktracker.entity.User;
 import by.tasktracker.exceptions.BadConfirmationCodeException;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -28,23 +26,27 @@ public class ProjectServiceImpl extends NamedServiceImpl<Project, ProjectReposit
     @Autowired private MailService mailService;
 
     @Override
-    public Project save(AddProjectDTO projectDTO, User user) {
+    public Project save(String name, String description, User creator) {
         Project project = new Project(
-                projectDTO.getName(),
-                projectDTO.getDescription() == null ? null : projectDTO.getDescription().isEmpty() ? null : projectDTO.getDescription(),
-                user
+                name,
+                Objects.nonNull(description)
+                        ? description.isEmpty()
+                            ? null
+                            : description
+                        : null,
+                creator
         );
-        project.setMembers(new HashSet<>(Collections.singletonList(user)));
+        project.setMembers(new HashSet<>(Collections.singletonList(creator)));
         return save(project);
     }
 
     @Override
-    public Project update(EditProjectDTO projectDTO) throws NotFoundException {
-        Project project = get(projectDTO.getProjectId());
-        if (projectDTO.getName() != null)
-            project.setName(projectDTO.getName());
-        if (projectDTO.getDescription() != null)
-            project.setDescription(projectDTO.getDescription());
+    public Project update(String projectId, String name, String description) throws NotFoundException {
+        Project project = get(projectId);
+        if (Objects.nonNull(name))
+            project.setName(name);
+        if (Objects.nonNull(description))
+            project.setDescription(description);
         return save(project);
     }
 
@@ -61,9 +63,9 @@ public class ProjectServiceImpl extends NamedServiceImpl<Project, ProjectReposit
     }
 
     @Override
-    public void delete(DeleteProjectDTO projectDTO) throws NotFoundException, BadConfirmationCodeException {
-        Project project = get(projectDTO.getProjectId());
-        if (projectDTO.getDeleteCode().equals(project.getDeleteCode())) {
+    public void delete(String projectId, String deleteCode) throws NotFoundException, BadConfirmationCodeException {
+        Project project = get(projectId);
+        if (deleteCode.equals(project.getDeleteCode())) {
             delete(project.getId());
         } else {
             throw new BadConfirmationCodeException();
