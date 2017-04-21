@@ -23,7 +23,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST)
     public User add(@RequestBody @Valid UserDTO userDTO){
-        return service.registerNewUser(userDTO);
+        return service.registerNewUser(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
     }
 
     @RequestMapping(value = "/{activationCode}",method = RequestMethod.GET)

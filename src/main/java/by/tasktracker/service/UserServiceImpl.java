@@ -1,6 +1,5 @@
 package by.tasktracker.service;
 
-import by.tasktracker.dto.UserDTO;
 import by.tasktracker.entity.User;
 import by.tasktracker.repository.UserRepository;
 import by.tasktracker.service.supeclass.CommonServiceImpl;
@@ -11,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> implements UserService {
@@ -35,11 +36,11 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
     }
 
     @Override
-    public User registerNewUser(UserDTO userDTO) {
+    public User registerNewUser(String name, String email, String password) {
             User newUser = save(new User(
-                    userDTO.getName(),
-                    userDTO.getEmail(),
-                    passwordEncoder.encode(userDTO.getPassword())
+                    name,
+                    email,
+                    passwordEncoder.encode(password)
             ));
             mailService.sendEmail(
                     newUser.getEmail(),
@@ -52,7 +53,7 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
     @Override
     public User activateUser(String activateCode) throws NotFoundException {
         User user = getByActivationCode(activateCode);
-        if (user == null) {
+        if (Objects.isNull(user)) {
             throw new NotFoundException("Bad activation link!");
         }
         user.setActivationCodeNull();

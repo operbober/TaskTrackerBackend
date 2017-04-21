@@ -1,6 +1,5 @@
 package by.tasktracker.service;
 
-import by.tasktracker.dto.UserDTO;
 import by.tasktracker.entity.User;
 import by.tasktracker.service.supeclass.CommonService;
 import javassist.NotFoundException;
@@ -11,6 +10,6 @@ public interface UserService extends CommonService<User> {
     User getByEmail(String email);
     User getByActivationCode(String activationCode);
     Page<User> getByProject(String projectId, int page, int size);
-    User registerNewUser(UserDTO userDTO);
+    User registerNewUser(String name, String email, String password);
     User activateUser(String activateCode) throws NotFoundException;
 }
