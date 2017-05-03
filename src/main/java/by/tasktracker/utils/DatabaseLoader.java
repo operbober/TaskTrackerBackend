@@ -1,6 +1,5 @@
 package by.tasktracker.utils;
 
-import by.tasktracker.dto.AddProjectDTO;
 import by.tasktracker.entity.Invite;
 import by.tasktracker.entity.InviteStatus;
 import by.tasktracker.entity.Project;
@@ -43,17 +42,14 @@ public class DatabaseLoader implements CommandLineRunner {
         testUser.setActivationCodeNull();
         userRepository.save(testUser);
 
-        AddProjectDTO addProjectDTO = new AddProjectDTO();
-        addProjectDTO.setName("TestProject");
-        Project testProject = projectService.save(addProjectDTO, testUser);
+        Project testProject = projectService.save("TestProject", null, testUser);
         System.out.println("test_project_id = " + testProject.getId());
 
         User ivan = new User("ivan", "ivan@mailinator.com", passwordEncoder.encode("interOP@123"));
         ivan.setActivationCodeNull();
         userRepository.save(ivan);
 
-        addProjectDTO.setName("IvanProject");
-        Project ivanProject = projectService.save(addProjectDTO, ivan);
+        Project ivanProject = projectService.save("IvanProject", null, ivan);
         System.out.println("ivan_project_id = " + ivanProject.getId());
 
         Invite invite = inviteService.save(new Invite(testUser, ivanProject, openInvite));
