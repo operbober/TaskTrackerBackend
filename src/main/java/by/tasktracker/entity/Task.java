@@ -1,52 +1,44 @@
 package by.tasktracker.entity;
 
 import by.tasktracker.entity.superclass.NamedEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
 public class Task extends NamedEntity {
-    private String description;
-    private Boolean status = false;
 
-    @ManyToOne(targetEntity = TaskStatus.class)
-    private TaskStatus taskStatus;
+    private String description;
+
+    @JsonFormat(pattern = "MM/dd/yyyy")
+    @NotNull
+    private Date creationDate;
 
     @ManyToOne(targetEntity = User.class)
     @NotNull
-    private User creator;
+    private User owner;
 
     @ManyToOne(targetEntity = Project.class)
     @NotNull
     private Project project;
 
-    @ManyToOne(targetEntity = User.class)
-    private User developer;
-
-    @ManyToMany(targetEntity = TaskTag.class)
-    @NotNull
-    private Set<TaskTag> tags = new HashSet<>();
+    @ManyToMany(targetEntity = TaskTag.class, fetch = FetchType.EAGER)
+    private Set<TaskTag> tags;
 
     protected Task() {}
 
-    public Task(String name, String description, User creator, Project project) {
+    public Task(String name, String description, User owner, Project project) {
         super(name);
         this.description = description;
-        this.creator = creator;
         this.project = project;
-    }
-
-    public Task(String name, String description, User creator, Project project, User developer) {
-        super(name);
-        this.description = description;
-        this.creator = creator;
-        this.project = project;
-        this.developer = developer;
+        this.owner = owner;
+        this.creationDate = new Date();
     }
 
     public String getDescription() {
@@ -57,28 +49,16 @@ public class Task extends NamedEntity {
         this.description = description;
     }
 
-    public Boolean isStatus() {
-        return status;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    public void setStatus(Boolean status) {
-        this.status = status;
+    public User getOwner() {
+        return owner;
     }
 
-    public TaskStatus getTaskStatus() {
-        return taskStatus;
-    }
-
-    public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
-    }
-
-    public User getCreator() {
-        return creator;
-    }
-
-    public void setCreator(User creator) {
-        this.creator = creator;
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     public Project getProject() {
@@ -89,23 +69,11 @@ public class Task extends NamedEntity {
         this.project = project;
     }
 
-    public User getDeveloper() {
-        return developer;
-    }
-
-    public void setDeveloper(User developer) {
-        this.developer = developer;
-    }
-
     public Set<TaskTag> getTags() {
         return tags;
     }
 
     public void setTags(Set<TaskTag> tags) {
         this.tags = tags;
-    }
-
-    public void addTag(TaskTag tag) {
-        this.tags.add(tag);
     }
 }

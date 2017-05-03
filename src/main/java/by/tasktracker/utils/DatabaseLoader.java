@@ -1,13 +1,11 @@
 package by.tasktracker.utils;
 
-import by.tasktracker.entity.Invite;
-import by.tasktracker.entity.InviteStatus;
-import by.tasktracker.entity.Project;
-import by.tasktracker.entity.User;
+import by.tasktracker.entity.*;
 import by.tasktracker.repository.InviteStatusRepository;
 import by.tasktracker.repository.UserRepository;
 import by.tasktracker.service.InviteService;
 import by.tasktracker.service.ProjectService;
+import by.tasktracker.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +22,9 @@ public class DatabaseLoader implements CommandLineRunner {
 
     @Autowired
     private InviteService inviteService;
+
+    @Autowired
+    private TaskService taskService;
 
     @Autowired
     private InviteStatusRepository inviteStatusRepository;
@@ -44,6 +45,11 @@ public class DatabaseLoader implements CommandLineRunner {
 
         Project testProject = projectService.save("TestProject", null, testUser);
         System.out.println("test_project_id = " + testProject.getId());
+
+        Task task1 = taskService.save("Task 1", "ololo", testUser, testProject.getId());
+        System.out.println("task_1_id =" + task1.getId());
+        Task task2 = taskService.save("TasK 2", "tralala", testUser, testProject.getId());
+        System.out.println("task_2_id =" + task2.getId());
 
         User ivan = new User("ivan", "ivan@mailinator.com", passwordEncoder.encode("interOP@123"));
         ivan.setActivationCodeNull();
