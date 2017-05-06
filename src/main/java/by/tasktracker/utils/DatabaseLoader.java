@@ -6,6 +6,7 @@ import by.tasktracker.repository.UserRepository;
 import by.tasktracker.service.InviteService;
 import by.tasktracker.service.ProjectService;
 import by.tasktracker.service.TaskService;
+import by.tasktracker.service.TaskTagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,9 @@ public class DatabaseLoader implements CommandLineRunner {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private TaskTagService taskTagService;
 
     @Autowired
     private InviteStatusRepository inviteStatusRepository;
@@ -50,6 +54,10 @@ public class DatabaseLoader implements CommandLineRunner {
         System.out.println("task_1_id =" + task1.getId());
         Task task2 = taskService.save("TasK 2", "tralala", testUser, testProject.getId());
         System.out.println("task_2_id =" + task2.getId());
+
+        TaskTag tag1 = taskTagService.save("tag1", testProject.getId());
+        TaskTag tag2 = taskTagService.save("tag2", testProject.getId());
+        TaskTag tag3 = taskTagService.save("tag3", testProject.getId());
 
         User ivan = new User("ivan", "ivan@mailinator.com", passwordEncoder.encode("interOP@123"));
         ivan.setActivationCodeNull();
