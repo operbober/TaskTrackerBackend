@@ -1,6 +1,7 @@
 package by.tasktracker.controller;
 
 import by.tasktracker.dto.AddTaskDTO;
+import by.tasktracker.dto.GetMyTasksDTO;
 import by.tasktracker.dto.GetTasksDTO;
 import by.tasktracker.entity.Task;
 import by.tasktracker.entity.User;
@@ -19,6 +20,21 @@ import javax.validation.Valid;
 public class TaskController {
 
     @Autowired private TaskService service;
+
+    @RequestMapping(value = "/my/{page}/{size}", method = RequestMethod.POST)
+    public Page<Task> get(@PathVariable("page") int page,
+                          @PathVariable("size") int size,
+                          @RequestBody @Valid GetMyTasksDTO getMyTasksDTO,
+                          @AuthenticationPrincipal User authorizedUser){
+        return service.getByProjectId(
+                getMyTasksDTO.getProjectId(),
+                getMyTasksDTO.getName(),
+                authorizedUser.getName(),
+                getMyTasksDTO.getTags(),
+                page,
+                size
+        );
+    }
 
     @Permission(ProjectMemberChecker.class)
     @RequestMapping(value = "/{page}/{size}", method = RequestMethod.POST)
