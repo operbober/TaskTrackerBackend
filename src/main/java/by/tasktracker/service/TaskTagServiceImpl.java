@@ -8,7 +8,12 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
+
+import static by.tasktracker.spec.TaskTagSpecification.nameEq;
+import static by.tasktracker.spec.TaskTagSpecification.nameLike;
+import static by.tasktracker.spec.TaskTagSpecification.projectIdLike;
 
 @Service
 public class TaskTagServiceImpl extends NamedServiceImpl<TaskTag, TaskTagRepository> implements TaskTagService {
@@ -16,14 +21,17 @@ public class TaskTagServiceImpl extends NamedServiceImpl<TaskTag, TaskTagReposit
     @Autowired private ProjectService projectService;
 
     @Override
-    public Page<TaskTag> getByProjectId(String projectId, int page, int size) {
-        return repository.findByProjectId(projectId, new PageRequest(page, size));
+    public Page<TaskTag> findAll(String projectId, String name, int page, int size) {
+        return repository.findAll(Specifications
+                .where(projectIdLike(projectId))
+                .and(nameLike(name)),
+                new PageRequest(page, size));
     }
 
     @Override
     public TaskTag save(String name, String projectId) {
         TaskTag tag = getByName(name);
-        if (getByName(name) != null){
+        if (tag != null){
             return tag;
         }
         Project project = projectService.get(projectId);
@@ -32,7 +40,7 @@ public class TaskTagServiceImpl extends NamedServiceImpl<TaskTag, TaskTagReposit
 
     @Override
     public void  delete(String name, String projectId) throws NotFoundException {
-        TaskTag tag = repository.findByNameAndProjectId(name, projectId);
+        TaskTag tag = repository.findOne(Specifications.where(projectIdLike(projectId)).and(nameEq(name)));
         if(tag != null) {
             delete(tag.getId());
         } else {
