@@ -1,0 +1,525 @@
+{
+	"variables": [],
+	"info": {
+		"name": "tasktracker",
+		"_postman_id": "5b5b9ead-9728-f614-9e9e-035a23382a4e",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "invites",
+			"description": "",
+			"item": [
+				{
+					"name": "Get my invites",
+					"request": {
+						"url": "http://localhost:3000/api/invites/0/10",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create invite",
+					"request": {
+						"url": "http://localhost:3000/api/invites",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\":\"testuser\",\n  \"projectId\":\"8949ae7c-d9d0-49af-b0f4-a9b1af7aeac3\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get project invites",
+					"request": {
+						"url": "http://localhost:3000/api/invites/8036ce7f-ff54-49ef-9ed7-be6918b93a4b/0/10",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm invite",
+					"request": {
+						"url": "http://localhost:3000/api/invites",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"inviteId\":\"be93db1c-ee32-47aa-9078-25ff8867b13c\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Close invite",
+					"request": {
+						"url": "http://localhost:3000/api/invites",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"inviteId\":\"be93db1c-ee32-47aa-9078-25ff8867b13c\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "projects",
+			"description": "",
+			"item": [
+				{
+					"name": "Add project",
+					"request": {
+						"url": "http://localhost:3000/api/projects",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\":\"test project\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Edit project",
+					"request": {
+						"url": "http://localhost:3000/api/projects",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"projectId\" : \"0bfc3429-3240-4f80-9ecc-6c7e58523edb\",\n  \"description\" : \"test project description\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete project",
+					"request": {
+						"url": "http://localhost:3000/api/projects",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "ab5b6000-9c32-47d4-8ea0-95fdade282ed"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get my projects",
+					"request": {
+						"url": "http://localhost:3000/api/projects/my/0/10",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get project members",
+					"request": {
+						"url": "http://localhost:3000/api/projects/members/0/10",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"projectId\" : \"917953b8-fa17-4bca-81d4-e3370a411b7f\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete project member",
+					"request": {
+						"url": "http://localhost:3000/api/projects/members",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"projectId\":\"c81c65db-0ff3-4c83-a844-28a34201ec54\",\n  \"userId\":\"fc8c855d-fa28-408b-85c2-12bb9ab8d29c\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "security",
+			"description": "",
+			"item": [
+				{
+					"name": "Sign up",
+					"request": {
+						"url": "http://localhost:3000/api/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"testemil@mailinator.com\",\n  \"name\" : \"testuser\",\n  \"password\" : \"interOP@123\",\n  \"confirmPassword\" : \"interOP@123\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Sign in",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"access_token\", \"bearer \" + jsonData.access_token);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://localhost:3000/api/login",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic dGFza3RyYWNrZXI6dGFza3RyYWNrZXI=",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "username",
+									"value": "testuser",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "password",
+									"value": "interOP@123",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get me",
+					"request": {
+						"url": "http://localhost:3000/api/users/me",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tasks",
+			"description": "",
+			"item": [
+				{
+					"name": "Add task",
+					"request": {
+						"url": "http://localhost:3000/api/tasks",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"projectId\":\"c138c148-f86b-4f63-955a-a623c2acd804\",\n  \"name\":\"First Task\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get tasks",
+					"request": {
+						"url": "http://localhost:3000/api/tasks/0/10",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"projectId\":\"b09f42f3-7ff1-4d69-9386-0faf3c8b5e6b\",\n  \"owner\" : \"testuser\",\n  \"name\" : \"1\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get my tasks",
+					"request": {
+						"url": "http://localhost:3000/api/tasks/my/0/10",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tasks tags",
+			"description": "",
+			"item": [
+				{
+					"name": "Add Tag",
+					"request": {
+						"url": "http://localhost:3000/api/tasks/tags/",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"projectId\":\"bc8d7972-8541-45bc-a035-7cc164aa5f18\",\n  \"name\" : \"java\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tags",
+					"request": {
+						"url": "http://localhost:3000/api/tasks/tags/0/10",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"projectId\":\"e18e0abb-dc30-4c97-8911-e7859bc43ba9\",\n  \"name\":\"tag\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Tag",
+					"request": {
+						"url": "http://localhost:3000/api/tasks/tags/",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"projectId\":\"bc8d7972-8541-45bc-a035-7cc164aa5f18\",\n  \"name\":\"java\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
