@@ -186,11 +186,16 @@
 								"key": "Authorization",
 								"value": "{{access_token}}",
 								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "ab5b6000-9c32-47d4-8ea0-95fdade282ed"
+							"raw": "{\n\t\"projectId\" : \"05e12696-bbbe-42e3-88de-dfcb5554df22\"\n}"
 						},
 						"description": ""
 					},
@@ -353,6 +358,56 @@
 							}
 						],
 						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get edit code",
+					"request": {
+						"url": "http://localhost:3000/api/users",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"description": "for update user data"
+					},
+					"response": []
+				},
+				{
+					"name": "Edit my info",
+					"request": {
+						"url": "http://localhost:3000/api/users",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"editCode\" : \"0cb47aba-ab9c-45d1-af3f-8a6e97f73798\",\n\t\"email\" : \"testemail@mailinator.com\",\n\t\"password\" : \"interOP@456\",\n\t\"confirmPassword\" : \"interOP@456\"\n}"
+						},
 						"description": ""
 					},
 					"response": []

@@ -37,6 +37,9 @@ public class User extends CommonEntity {
     @JsonIgnore
     private String activationCode;
 
+    @JsonIgnore
+    private String editCode;
+
     @ManyToMany(mappedBy = "members", fetch = FetchType.LAZY)
     private Set<Project> projects;
 
@@ -91,5 +94,13 @@ public class User extends CommonEntity {
 
     public Date getSignUpDate() {
         return signUpDate;
+    }
+
+    public String getEditCode() {
+        return editCode;
+    }
+
+    public void setEditCode(String editCode) {
+        this.editCode = editCode;
     }
 }

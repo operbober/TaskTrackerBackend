@@ -1,3 +1,4 @@
+Date 15/05/2017 -> User       (Edit)
 Date 09/05/2017 -> Tags       (Get By Name)
 Date 09/05/2017 -> Tasks      (Get My)
 Date 06/05/2017 -> Tags       (Get, Add, Delete)
