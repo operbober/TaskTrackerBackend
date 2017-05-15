@@ -4,13 +4,11 @@ import by.tasktracker.entity.superclass.NamedEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,6 +31,14 @@ public class Project extends NamedEntity {
     @JsonIgnore
     @ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY)
     private Set<User> members;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Task> tasks;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<TaskTag> taskTags;
 
     public Project() {}
 
@@ -79,5 +85,21 @@ public class Project extends NamedEntity {
 
     public void setMembers(Set<User> members) {
         this.members = members;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public List<TaskTag> getTaskTags() {
+        return taskTags;
+    }
+
+    public void setTaskTags(List<TaskTag> taskTags) {
+        this.taskTags = taskTags;
     }
 }
